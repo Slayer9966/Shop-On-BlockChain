@@ -1,0 +1,19 @@
+
+# Netlify _redirects file for React Router SPA
+# This file should be placed in your public folder
+
+# Redirect all routes to index.html for client-side routing
+/* /index.html 200
+
+# Optional: Redirect specific legacy URLs if needed
+# /old-login /loginPage 301
+# /signin /loginPage 301
+
+# Optional: API routes (if you have backend API calls)
+# /api/* https://your-backend-api.com/api/:splat 200
+
+# Optional: Handle specific file extensions that should not be redirected
+# /*.js /404.html 404
+# /*.css /404.html 404
+# /*.png /404.html 404
+# /*.jpg /404.html 404
