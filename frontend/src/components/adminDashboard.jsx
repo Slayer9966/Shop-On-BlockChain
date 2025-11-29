@@ -1,10 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Package, Users, Receipt, LogOut, Plus, Edit, Trash2, Save, X, Search, Filter, BarChart, TrendingUp, ShoppingCart, Clock, CheckCircle, Truck, XCircle } from 'lucide-react';
+import { Package, Users, Receipt, LogOut, Plus, Edit, Trash2, Save, X, Search, Filter, BarChart, TrendingUp, ShoppingCart, Clock, CheckCircle, Truck, XCircle, Lock } from 'lucide-react';
 
 // API Configuration
 const API_BASE_URL = 'http://localhost:5000/api';
 
+// Hardcoded password
+const ADMIN_PASSWORD = "admin";
+
 export default function AdminDashboard() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('overview'); // overview, products, orders, users
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -28,7 +34,22 @@ export default function AdminDashboard() {
   const [updatingOrderId, setUpdatingOrderId] = useState(null);
   const [newStatus, setNewStatus] = useState('');
 
-  useEffect(() => {
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setError('');
+    
+    if (password === ADMIN_PASSWORD) {
+      setIsAuthenticated(true);
+      setPassword('');
+      // Load data after successful authentication
+      loadDashboardData();
+    } else {
+      setError('Invalid password. Please try again.');
+      setPassword('');
+    }
+  };
+
+  const loadDashboardData = () => {
     const userData = localStorage.getItem('user');
     if (userData) {
       setUser(JSON.parse(userData));
@@ -39,7 +60,7 @@ export default function AdminDashboard() {
     fetchProducts();
     fetchOrders();
     fetchUsers();
-  }, []);
+  };
 
   const fetchProducts = async () => {
     try {
@@ -247,6 +268,13 @@ export default function AdminDashboard() {
     window.location.href = '/login';
   };
 
+  const handleAdminLogout = () => {
+    setIsAuthenticated(false);
+    setActiveTab('overview');
+    setPassword('');
+    setError('');
+  };
+
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
       case 'delivered':
@@ -283,6 +311,59 @@ export default function AdminDashboard() {
   const totalOrders = orders.length;
   const totalUsers = users.length;
 
+  // Password Protection Screen
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 flex items-center justify-center p-4">
+        <div className="bg-gray-800/50 backdrop-blur-lg border border-gray-700 rounded-xl p-8 max-w-md w-full">
+          <div className="text-center mb-8">
+            <div className="flex justify-center mb-4">
+              <div className="p-3 bg-blue-600 rounded-full">
+                <Lock className="w-8 h-8 text-white" />
+              </div>
+            </div>
+            <h1 className="text-2xl font-bold text-white mb-2">Admin Access</h1>
+            <p className="text-gray-400">Enter the admin password to continue</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div>
+              <label className="block text-gray-300 mb-2 text-sm font-medium">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 transition-all"
+                placeholder="Enter admin password"
+                autoFocus
+              />
+              {error && (
+                <p className="text-red-400 text-sm mt-2 flex items-center gap-1">
+                  <XCircle className="w-4 h-4" />
+                  {error}
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-all"
+            >
+              Access Dashboard
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-gray-500 text-sm">
+              Contact system administrator if you've forgotten the password
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Main Dashboard (only shown after authentication)
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900">
       {/* Header */}
@@ -301,9 +382,9 @@ export default function AdminDashboard() {
               </div>
 
               <button
-                onClick={handleLogout}
+                onClick={handleAdminLogout}
                 className="p-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all duration-300"
-                title="Logout"
+                title="Logout from Admin"
               >
                 <LogOut className="w-6 h-6" />
               </button>
@@ -439,13 +520,6 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="flex gap-2">
-                      {/* <button
-                        onClick={() => openEditProduct(product)}
-                        className="flex-1 flex items-center justify-center gap-2 bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded-lg font-semibold transition-all"
-                      >
-                        <Edit className="w-4 h-4" />
-                        Edit
-                      </button> */}
                       <button
                         onClick={() => handleDeleteProduct(product.id)}
                         className="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition-all"
