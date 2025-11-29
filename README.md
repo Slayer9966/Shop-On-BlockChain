@@ -1,223 +1,121 @@
-📦 Database-Free E-commerce Platform
+# 🚀 Database-Free E-commerce Platform with In-Memory Storage
 
-This project implements a full-stack web application designed for simplicity and security, featuring a unique, database-free architecture. All application data, including user accounts and product information, is managed using structured, in-memory JavaScript tables. Critical data, such as passwords, is secured using AES encryption.
+A full-stack web application designed as a proof-of-concept for a **database-free architecture** utilizing structured **in-memory tables**. The application is built with a **React** frontend, a **Node.js/Express** backend, and incorporates **AES encryption** for secure data handling.
 
-🌟 Features
+## ✨ Features
 
-Database-Free Architecture: All data is stored and managed entirely in structured in-memory tables, making the application fast and lightweight for a demo or small-scale proof-of-concept.
+* **Database-Free Architecture:** All application data (users, products, carts, orders) is stored and managed entirely in **structured in-memory tables**.
+* **Secure Authentication:** Robust login and signup system with all user passwords securely **encrypted** using **AES**.
+* **Role-Based Access Control (RBAC):** Separate, protected dashboards for **admin** and **regular users**.
+* **User Dashboard:** An interactive interface allowing users to **browse products**, **manage their cart**, and **place orders**.
+* **Secure Data Handling:** All sensitive data, including passwords and potentially other PII, is securely **encrypted and decrypted using AES** before and after processing. 
 
-Secure Authentication: Includes a secure login and signup system where all passwords and sensitive data are encrypted using AES before being stored in memory.
+[Image of AES encryption process]
 
-Role-Based Access: Separate, protected dashboards for Admin and Regular Users.
+* **Centralized Handlers:** **Express handlers** manage all core functionalities: login, signup, user dashboard operations, and admin tasks.
 
-User Dashboard: An interactive interface allowing users to browse products, manage their cart, and place orders.
+---
 
-Secure Data Handling: All sensitive operations, including user creation and authentication, involve encrypting and decrypting data using AES for security assurance.
+## 📂 Project Structure
 
-Express Handlers: Robust Express.js handlers process all application logic: login, signup, admin operations, and user dashboard interactions.
+### Tables / Data Structures
 
-📂 Project Structure
+| Table Name | Key Fields | Purpose |
+| :--- | :--- | :--- |
+| **User Table** | `id`, `username`, `email`, `role`, **`encrypted password`** | Stores user profiles and authentication details. |
+| **Products Table** | `id`, `name`, `description`, `price`, `stock` | Inventory management for all products. |
+| **Cart Table** | `id`, `user_id`, `product_id`, `quantity` | Stores items currently in a user's shopping cart. |
+| **Orders Table** | `id`, `user_id`, `product_id`, `quantity`, `order_date` | Records completed user orders. |
 
-The architecture is split between a React frontend and a Node/Express backend. Data is managed in simple JavaScript arrays and objects that simulate database tables.
+### Pages (React UI)
 
-Tables / Data Structures (In-Memory)
+* **Login Page:** Handles user and admin login with form validation.
+* **Signup Page:** Facilitates new user registration, securing passwords via encryption.
+* **Admin Dashboard:** Comprehensive view for administrators to manage users, products, and system statistics.
+* **User Dashboard:** Main interface for users to browse inventory, manage their cart, and process transactions.
 
-All data is initialized and managed in memory on the backend server.
+### Handlers (Express)
 
-Table Name
+| Handler | Functionality | Security Note |
+| :--- | :--- | :--- |
+| **Login Handler** | Validates credentials and **decrypts** the stored password for authentication. | Data is decrypted only for verification. |
+| **Signup Handler** | **Encrypts** the user password before storing the new user data in-memory. | All new passwords are encrypted immediately. |
+| **Admin Handler** | Manages user and product data, enforcing admin-only access. | Role-based checks. |
+| **User Dashboard Handler** | Processes product viewing, cart modifications, and final order placements. | Handles linking operations to the authenticated user ID. |
 
-Fields
+---
 
-Description
+## 🛠️ Technologies Used
 
-Security Note
+| Category | Technology | Description |
+| :--- | :--- | :--- |
+| **Frontend** | **React.js** | Used for building the user interface and interactive components. |
+| **Backend** | **Node.js** with **Express.js** | Provides the server environment and RESTful API endpoints. |
+| **Security** | **AES Encryption/Decryption** | Utilized for securing all sensitive in-memory data. |
+| **Data Storage** | **In-Memory Structured Tables** | Custom JavaScript data structures acting as a temporary, fast storage layer. |
+| **Others** | JavaScript, HTML, CSS | Core web development languages. |
 
-User Table
+---
 
-id, username, email, role, password
+## ⚙️ Installation
 
-Stores core user information.
+To set up and run the project locally, follow these steps:
 
-Password is stored AES-encrypted.
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    ```
 
-Products Table
+2.  **Navigate to the project folder:**
+    ```bash
+    cd project-folder
+    ```
 
-id, name, description, price, stock
+3.  **Install backend dependencies:**
+    ```bash
+    npm install
+    ```
 
-List of available products.
+4.  **Install frontend dependencies:**
+    ```bash
+    cd client
+    npm install
+    ```
 
+5.  **Start the backend server:**
+    ```bash
+    npm start
+    ```
 
+6.  **Start the React frontend:**
+    (Open a new terminal session in the **client** directory)
+    ```bash
+    npm run start
+    ```
 
-Cart Table
+7.  **Access the application:**
+    Open your browser and navigate to `http://localhost:3000`.
 
-id, user_id, product_id, quantity
+---
 
-Tracks items added to the user's cart.
-
-
-
-Orders Table
-
-id, user_id, products (JSON), status, date
-
-Records completed order details.
-
-
-
-Pages (React UI)
-
-Page
-
-Role
-
-Purpose
-
-Login Page
-
-User/Admin
-
-Secure form for credential validation.
-
-Signup Page
-
-User
-
-Registration form to create a new user account.
-
-Admin Dashboard
-
-Admin
-
-Manage all users, products, and view system statistics.
-
-User Dashboard
-
-User
-
-Product browsing, cart management, and order placement.
-
-Handlers (Express)
-
-Handler
-
-Functionality
-
-Login Handler
-
-Validates credentials by decrypting stored passwords and comparing them to the user input.
-
-Signup Handler
-
-Encrypts the user's password using AES before storing the user object in the in-memory User Table.
-
-Admin Handler
-
-Provides secure API endpoints for Admin-level operations (user and product management).
-
-User Dashboard Handler
-
-Processes requests for product lists, cart modifications, and finalizing orders.
-
-💻 Technologies Used
-
-Category
-
-Technology
-
-Purpose
-
-Frontend
-
-React.js
-
-Interactive and component-based user interface.
-
-Backend
-
-Node.js with Express.js
-
-Fast, minimal server-side logic and API routing.
-
-Security
-
-AES Encryption
-
-Secure handling and storage of sensitive in-memory data.
-
-Data Storage
-
-In-memory Structures
-
-Database-free persistence using structured JavaScript arrays/objects.
-
-🚀 Installation
-
-Follow these steps to get the project up and running on your local machine.
-
-Prerequisites
-
-Node.js (LTS version recommended)
-
-npm (comes with Node.js)
-
-Setup
-
-Clone the repository:
-
-git clone <repository-url>
-
-
-Navigate to the project folder:
-
-cd project-folder
-
-
-Install backend dependencies:
-
-npm install
-
-
-Install frontend dependencies:
-
-cd client
-npm install
-cd .. # Return to the root
-
-
-Running the Application
-
-Start the backend server (from the root directory):
-
-npm start 
-# The Express server runs on port 5000 (or specified in environment)
-
-
-Start the React frontend (from the root directory):
-
-npm run start 
-# The React development server runs on port 3000
-
-
-Open your browser and navigate to http://localhost:3000
-
-🛠 Usage
-
-Signup: Create a new account. The system will automatically assign you the user role. Your password will be encrypted immediately.
-
-Login: Access your account using the registered email and password.
-
-User Dashboard: Browse the available products, add items to your cart, and place a dummy order.
-
-Admin Access (Example): For demonstration purposes, you can manually modify a user's role in the in-memory user table (on the backend) to admin to access the Admin Dashboard.
-
-🔮 Future Improvements
-
-While the database-free approach is great for learning and simplicity, these improvements would make the application ready for production:
-
-Persistent Storage: Add a real, persistent database (e.g., MongoDB, PostgreSQL, or MySQL) to ensure data is not lost when the server restarts.
-
-Authentication Upgrade: Implement JWT-based authentication for token security, session management, and better scalability.
-
-Enhanced Frontend: Improve the design with more interactive components, animations, and a modern utility framework like Tailwind CSS.
-
-Logging and Analytics: Add role-specific logging, notifications, and basic analytics reporting for the Admin dashboard.
+## 💡 Usage
+
+1.  **Signup:** Create a new account as a regular user using the signup page. Your password will be encrypted upon submission.
+2.  **Login:** Access your account using your registered email and password.
+3.  **User:**
+    * Browse the product list.
+    * Add items to your cart.
+    * View your cart and place an order.
+4.  **Admin:**
+    * (Requires an admin-role account for access)
+    * Manage the list of users and products.
+    * View system statistics.
+
+---
+
+## 🔮 Future Improvements
+
+* **Persistent Storage:** Integrate a traditional database (e.g., **MongoDB** or **MySQL**) to move beyond in-memory storage.
+* **Enhanced Authentication:** Implement **JWT-based authentication** for token security and stateless session management.
+* **Frontend Design:** Refine the user experience with modern UI/UX design principles and more interactive components.
+* **Notifications and Analytics:** Add role-specific notifications (e.g., 'New Order' for Admin) and robust analytics.
